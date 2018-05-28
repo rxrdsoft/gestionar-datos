@@ -70,7 +70,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-4" style="padding-left: 30px;margin-left: 15px;">
+                                    <div class="col-md-2" style="padding-left: 30px;margin-left: 15px;">
                                         <div class="dropdown show">
                                             <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                Listas Negras
@@ -80,6 +80,24 @@
                                                 @foreach($categorias as $categoria)
                                                 <a class="dropdown-item lista_negra" href="#" data-id="{{ $categoria->id }}">{{ $categoria->nombre }}</a>
                                                 @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                        <div class="input-group">
+                                            <select name="filtrar_lista" id="filtrar_lista" class="form-control">
+                                                <option selected disabled>-- Filtrar ---</option>
+                                                @foreach($listas as $lista)
+                                                <option value="{{ $lista->id }}">{{ $lista->nombre_lista}}</option>
+                                                @endforeach
+
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                {{--<button  class="btn btn-primary filtrar">--}}
+                                                    {{--<i class="fa fa-search" aria-hidden="true"></i>--}}
+                                                {{--</button>--}}
+
                                             </div>
                                         </div>
                                     </div>
@@ -115,10 +133,18 @@
     @include('lista-blanca.importar')
     @push('descargar-todos')
         <script>
+
             $(document).ready( function () {
+                var url = 'http://localhost/emkt/public/lista-blanca-json'
+                // $('.filtrar').click(function(){
+                //     // alert('Filtar lista por: '+$('#filtrar_lista').val());
+                //     id = $('#filtrar_lista').val();
+                //     url = 'http://localhost/emkt/public/lista-blanca-json/'+id;
+                // });
+
                 var table = $('#myTable').DataTable({
 
-                    "ajax": 'http://localhost/emkt/public/lista-blanca-json',
+                    "ajax": url,
                     "dataSrc": "",
                     "columns": [
                         { "data": "nombre" },
@@ -143,8 +169,6 @@
                     },
 
                 });
-
-
 
                 var array = [];
                 $('#myTable tbody').on( 'click', 'tr', function () {
@@ -181,12 +205,71 @@
                         data:array,
                         categoria :$(this).data('id')
                     },function(result){
-                        console.log('se envio con exito');
-                        console.log(result)
+                        // console.log('se envio con exito');
+                        // console.log(result)
+                        swal({
+                            title:"Datos movidos",
+                            text: "Se movieron los datos correctamente",
+                            timer:4000,
+                            showConfirmButton:false,
+                            icon: "success",
+                        });
                     })
 
                 } );
+
+                var table_temp = '';
+                $('#filtrar_lista').change(function(){
+                    console.log('Se cambio el filtro');
+
+                    var cont = 0;
+                    if( table_temp != ''){
+                        table_temp.destroy()
+                        console.log("cont change"+cont)
+                    }
+                    else{
+                        cont = cont+1;
+                        console.log(cont)
+                        table.destroy();
+                        console.log(table_temp)
+                    }
+                    // console.log();
+                    id = $('#filtrar_lista').val();
+                    url = 'http://localhost/emkt/public/lista-blanca-json/'+id;
+                    table_temp = $('#myTable').DataTable({
+
+                        "ajax": url,
+                        "dataSrc": "",
+                        "columns": [
+                            { "data": "nombre" },
+                            { "data": "apellido" },
+                            { "data": "email" },
+                            { "data": "sms" },
+
+                        ],
+                        "language": {
+                            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                            "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                            "lengthMenu": "Mostrar _MENU_ registros",
+                            "search": "Buscar:",
+                            "paginate": {
+                                "first":      "Primero",
+                                "last":       "Ultimo",
+                                "next":       "Siguiente",
+                                "previous":   "Anterior"
+                            },
+                            "zeroRecords":  "No se encontraron registros coincidentes",
+                            "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+                        },
+
+                    });
+                })
+
+
             } );
+
+
+
         </script>
         <script>
             $('.exportar').click(function(){

@@ -34,6 +34,17 @@ class ListaBlancaController extends Controller
         return response()->json(['data'=> $lista_blanca]);
     }
 
+    public function filtrado_json($id)
+    {
+        $lista_blanca = DB::table('blanca_lista as bl')
+                            ->join('lista_blanca as ls','bl.lista_blanca_id','=','ls.id')
+                            ->select('ls.id','ls.nombre','ls.apellido','ls.email','ls.sms')
+                            ->where('bl.lista_id',$id)
+                            ->get();
+
+        return response()->json(['data'=>$lista_blanca]);
+    }
+
     public function lista()
     {
         $listas = Lista::paginate(7);

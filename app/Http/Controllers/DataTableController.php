@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\ListaBlanca;
 use App\ListaNegra;
 use Illuminate\Http\Request;
-
+use RealRashid\SweetAlert\Facades\Alert;
 class DataTableController extends Controller
 {
     public function storeListaNegra(Request $request)
@@ -21,6 +21,8 @@ class DataTableController extends Controller
             $lista_negra->categoria_id = $request->get('categoria');
             $lista_negra->save();
         }
+
+//        Alert::success('Datos movidos', 'Se movieron los datos satisfactoriamente');
 
         return "re realizo correctamente";
 

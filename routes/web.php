@@ -37,6 +37,7 @@ Route::group(['middleware'=>'auth'],function(){
 
     Route::get('decargar/invalidos','ErrorController@Excel_Invalido')->name('descargar.invalidos');
     Route::get('eliminar',function(){
+
         \App\Ivalido::truncate();
 
         return redirect('lista-blanca/all');
@@ -60,5 +61,5 @@ Route::get('/register', function (){
 });
 
 Route::get('lista-blanca-json','ListaBlancaController@todos_json');
-
+Route::get('lista-blanca-json/{id}','ListaBlancaController@filtrado_json');
 Route::post('mover/suscriptores','DataTableController@storeListaNegra');
